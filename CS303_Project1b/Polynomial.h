@@ -8,12 +8,13 @@ using namespace std;
 class Polynomial
 {
 public:
-	Polynomial();
+	Polynomial() {}
 	void addTerm(Term newterm);
 	const Polynomial& operator+(const Polynomial& rhs);
 private:
 	list<Term> terms;
 };
+
 
 void Polynomial::addTerm(Term newterm)
 {
@@ -29,6 +30,8 @@ void Polynomial::addTerm(Term newterm)
 			if (*iter == newterm)
 			{
 				*iter + newterm;
+				if (iter->getCoeff() == 0)
+					terms.erase(iter);
 				return;
 			}
 			else if (*iter < newterm)
