@@ -14,7 +14,7 @@ private:
 	int exponent;
 	int coeff;
 };
-
+// used when adding two polynomials
 void Term::operator+(Term term2)
 {
 	coeff += term2.getCoeff();
