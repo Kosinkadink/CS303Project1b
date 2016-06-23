@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Term.h"
+#include "PolynomialException.h"
 #include <list>
 #include <iostream>
 
@@ -10,8 +11,10 @@ class Polynomial
 {
 public:
     Polynomial() { ; }
+	Polynomial(string input) { createFromString(input); }
 	void addTerm(Term newterm);
 	Polynomial operator+(const Polynomial& rhs);
+	void createFromString(string input);
 	void printPolynomial();
     ~Polynomial();
     Polynomial(const Polynomial& other);
@@ -83,10 +86,19 @@ void Polynomial::printPolynomial()
         if (iter1->getCoeff() > 0)
         {
             // special case, don't print 1 in 1x situations
-            if (iter1->getCoeff() == 1 && iter1->getExponent() != 0)
-                cout << "+";
-            else
-                cout << "+" << iter1->getCoeff();
+			if (iter1->getCoeff() == 1 && iter1->getExponent() != 0)
+			{
+				//special case, don't print + if first term
+				if (iter1 != terms.begin())
+					cout << "+";
+			}
+			else
+			{
+				//special case, don't print + if first term
+				if (iter1 != terms.begin())
+					cout << "+";
+				cout << iter1->getCoeff();
+			}
         }
         else if (iter1->getCoeff() < 0)
         {
@@ -148,4 +160,328 @@ const Polynomial& Polynomial::operator= (const Polynomial& rhs)
         }
     }
     return *this;
+}
+
+
+void Polynomial::createFromString(string input)
+{
+
+	if (!terms.empty())
+		terms.clear();
+
+	if (input.empty()) // a blank string = poly with a zero constant term
+	{
+		addTerm(Term(0, 0));
+		return;
+	}
+
+	stringstream inputstream(input);
+
+	int coeff, exp = NULL;
+	char ch, ch2;
+
+	while (inputstream >> ch)
+	{
+		if (isdigit(ch)) //starts with a digit; only occurs when the first term entered is positive
+		{
+			inputstream.putback(ch);
+			// read integer into coeff
+			inputstream >> coeff;
+			// determine if next character is X or part of the next term
+			if (inputstream >> ch) // if something to read
+			{
+				if (ch == '+' || ch == '-')
+				{
+					inputstream.putback(ch);
+					exp = 0;
+					addTerm(Term(coeff, exp));
+				}
+				else if (ch == 'X')
+				{
+					if (inputstream >> ch) //if something to read
+					{
+						// check if there is a carrot with value
+						if (ch == '^')
+						{
+							inputstream >> ch;
+							if (isdigit(ch))
+							{
+								inputstream.putback(ch);
+								inputstream >> exp;
+								addTerm(Term(coeff, exp));
+							}
+							else if (ch == '-')
+							{
+								inputstream >> ch;
+								if (isdigit(ch))
+								{
+									inputstream.putback(ch);
+									inputstream >> exp;
+									addTerm(Term(coeff, -exp)); //making exponent negative because of minus sign
+								}
+								else
+								{
+									// THROW polynomial exception; no exponent value when expected
+									throw PolynomialException("no exponent value when expected, got: " + ch);
+								}
+							}
+							else
+							{
+								// THROW polynomial exception; expected exponent or start of next term
+								throw PolynomialException("expected exponent or start of next term, got: " + ch);
+							}
+						}
+						else if (ch == '+' || ch == '-')
+						{
+							inputstream.putback(ch);
+							exp = 1;
+							addTerm(Term(coeff, exp));
+						}
+						else
+						{
+							// THROW polynomial exception; expected ^ or start of next term
+							throw PolynomialException("expected ^ or start of next term, got: " + ch);
+						}
+					}
+					else
+					{
+						exp = 1;
+						addTerm(Term(coeff, exp));
+					}
+				}
+				else
+				{
+					// THROW polynomial exception; expected +/-, X or start of next term
+					throw PolynomialException("expected +/-, X or start of next term, got: " + ch);
+				}
+			}
+			else
+			{
+				exp = 1;
+				addTerm(Term(coeff, exp));
+			}
+		}
+		else // used for all non-first terms
+		{
+			if (ch == '+' || ch == '-')
+			{
+				inputstream >> ch2;
+				if (isdigit(ch2))
+				{
+					inputstream.putback(ch2);
+					inputstream >> coeff;
+					if (ch == '-')
+						coeff *= -1;
+					//determine if next character is X, or start of next term
+					if (inputstream >> ch) //if something to read
+					{
+
+						if (ch == 'X')
+						{
+							// determine if next character is X or part of the next term
+							if (inputstream >> ch) // if something to read
+							{
+								if (ch == '+' || ch == '-')
+								{
+									inputstream.putback(ch);
+									exp = 1;
+									addTerm(Term(coeff, exp));
+								}
+								// check if there is a carrot with value
+								else if (ch == '^')
+								{
+									inputstream >> ch;
+									if (isdigit(ch))
+									{
+										inputstream.putback(ch);
+										inputstream >> exp;
+										addTerm(Term(coeff, exp));
+									}
+									else if (ch == '-')
+									{
+										inputstream >> ch;
+										if (isdigit(ch))
+										{
+											inputstream.putback(ch);
+											inputstream >> exp;
+											addTerm(Term(coeff, -exp)); //making exponent negative because of minus sign
+										}
+										else
+										{
+											// THROW polynomial exception; no exponent value when expected
+											throw PolynomialException("no exponent value when expected, got: " + ch);
+										}
+									}
+									else
+									{
+										// THROW polynomial exception; expected exponent or start of next term
+										throw PolynomialException("expected exponent or start of next term, got: " + ch);
+									}
+								}
+								else
+								{
+									// THROW polynomial exception; expected ^ or start of next term
+									throw PolynomialException("expected ^ or start of next term, got: " + ch);
+								}
+							}
+							else
+							{
+								exp = 1;
+								addTerm(Term(coeff, exp));
+							}
+						}
+						else if (ch == '+' || ch == '-')
+						{
+							inputstream.putback(ch);
+							exp = 0;
+							addTerm(Term(coeff, exp));
+						}
+						else
+						{
+							// THROW polynomial exception; expected X or start of next term
+							throw PolynomialException("expected X or start of next term, got: " + ch);
+						}
+					}
+					else
+					{
+						exp = 0;
+						addTerm(Term(coeff, exp));
+					}
+				}
+				else if (ch2 == 'X')
+				{
+					coeff = 1;
+					if (ch == '-')
+						coeff *= -1;
+					// determine if next character is X or part of the next term
+					if (inputstream >> ch) // if something to read
+					{
+						if (ch == '+' || ch == '-')
+						{
+							inputstream.putback(ch);
+							exp = 1;
+							addTerm(Term(coeff, exp));
+						}
+
+
+						// check if there is a carrot with value
+						else if (ch == '^')
+						{
+							inputstream >> ch;
+							if (isdigit(ch))
+							{
+								inputstream.putback(ch);
+								inputstream >> exp;
+								addTerm(Term(coeff, exp));
+							}
+							else if (ch == '-')
+							{
+								inputstream >> ch;
+								if (isdigit(ch))
+								{
+									inputstream.putback(ch);
+									inputstream >> exp;
+									addTerm(Term(coeff, -exp)); //making exponent negative because of minus sign
+								}
+								else
+								{
+									// THROW polynomial exception; no exponent value when expected
+									throw PolynomialException("no exponent value when expected, got: " + ch);
+
+								}
+							}
+							else
+							{
+								// THROW polynomial exception; expected exponent or start of next term
+								throw PolynomialException("expected exponent or start of next term, got: " + ch);
+							}
+						}
+
+						else
+						{
+							// THROW polynomial exception; expected ^ or start of next term
+							throw PolynomialException("expected ^ or start of next term, got: " + ch);
+						}
+					}
+					else
+					{
+						exp = 1;
+						addTerm(Term(coeff, exp));
+					}
+				}
+				else
+				{
+					// THROW polynomial exception; expected coefficient or X
+					throw PolynomialException("expected coefficient or X, got: " + ch);
+				}
+			}
+			else if (ch == 'X')
+			{
+				coeff = 1;
+				// determine if next character is X or part of the next term
+				if (inputstream >> ch) // if something to read
+				{
+					if (ch == '+' || ch == '-')
+					{
+						inputstream.putback(ch);
+						exp = 1;
+						addTerm(Term(coeff, exp));
+					}
+					// check if there is a carrot with value
+					else if (ch == '^')
+					{
+						inputstream >> ch;
+						if (isdigit(ch))
+						{
+							inputstream.putback(ch);
+							inputstream >> exp;
+							addTerm(Term(coeff, exp));
+						}
+						else if (ch == '-')
+						{
+							inputstream >> ch;
+							if (isdigit(ch))
+							{
+								inputstream.putback(ch);
+								inputstream >> exp;
+								addTerm(Term(coeff, -exp)); //making exponent negative because of minus sign
+							}
+							else
+							{
+								// THROW polynomial exception; no exponent value when expected
+								throw PolynomialException("no exponent value when expected, got: " + ch);
+							}
+						}
+						else
+						{
+							// THROW polynomial exception; expected exponent or start of next term
+							throw PolynomialException("expected exponent or start of next term, got: " + ch);
+						}
+					}
+					else
+					{
+						// THROW polynomial exception; expected ^ or start of next term
+						throw PolynomialException("expected ^ or start of next term, got: " + ch);
+					}
+				}
+				else
+				{
+					exp = 1;
+					addTerm(Term(coeff, exp));
+				}
+			}
+
+		}
+		if (coeff == NULL || exp == NULL && coeff != 0 && exp != 0)
+		{
+			// THROW polynomial exception; coefficient or exponent was not understood
+			throw PolynomialException("coefficient or exponent was not understood");
+
+		}
+
+		//set coeff adn exp to null again
+		coeff = exp = NULL;
+	}
+
+	// all done
 }

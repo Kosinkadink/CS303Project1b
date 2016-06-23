@@ -68,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Polynomial.h" />
+    <ClInclude Include="PolynomialException.h" />
     <ClInclude Include="Term.h" />
     <ClInclude Include="UserInterface.h" />
   </ItemGroup>

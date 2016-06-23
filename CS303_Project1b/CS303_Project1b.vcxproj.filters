@@ -29,5 +29,8 @@
     <ClInclude Include="Polynomial.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="PolynomialException.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

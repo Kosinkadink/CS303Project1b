@@ -9,6 +9,7 @@ int main()
 	string example = "-X+5+X^2-10";
 	string example2 = "5X-5X^-2+10-5X+X^2";
 	Polynomial pleasework, again, total;
+	Polynomial blank("");
 
 	UserInterface ui;
 	pleasework = ui.parsePolynomial(example);
