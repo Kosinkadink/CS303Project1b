@@ -20,9 +20,10 @@ private:
 	list<Term> terms;
 };
 
-
+// add a term in the correct position in a polynomial's list
 void Polynomial::addTerm(Term newterm)
 {
+    // polynomial is empty
 	if (terms.empty())
 	{
 		terms.push_front(newterm);
@@ -30,15 +31,19 @@ void Polynomial::addTerm(Term newterm)
 	else
 	{
 		list<Term>::iterator iter;
+        // find correct spot to insert term
 		for (iter = terms.begin(); iter != terms.end(); iter++)
 		{
 			if (*iter == newterm)
 			{
+                // add coefficents of like terms
 				*iter + newterm;
+                // remove terms from polynomial if their coefficent's become 0
 				if (iter->getCoeff() == 0)
 					terms.erase(iter);
 				return;
 			}
+            // place into correct position
 			else if (*iter < newterm)
 			{
 				terms.insert(iter, newterm);
@@ -49,17 +54,18 @@ void Polynomial::addTerm(Term newterm)
 	}
 }
 
-
+// add two polynomials and return a new polynomial
 Polynomial Polynomial::operator+(const Polynomial& rhs)
 {
 	list<Term>::iterator iter1;
 	list<Term>::const_iterator iter2;
 	Polynomial newPoly;
-
+    // add all items from first polynomial
 	for (iter1 = terms.begin(); iter1 != terms.end(); iter1++)
 	{
 		newPoly.addTerm(*iter1);
 	}
+    // add all items from second polynomial
 	for (iter2 = rhs.terms.begin(); iter2 != rhs.terms.end(); iter2++)
 	{
 		newPoly.addTerm(*iter2);
@@ -67,6 +73,7 @@ Polynomial Polynomial::operator+(const Polynomial& rhs)
 	return newPoly;
 }
 
+// print ordered polynomial to the screen in legible fashion
 void Polynomial::printPolynomial()
 {
 	list<Term>::iterator iter1;
@@ -121,12 +128,15 @@ Polynomial::Polynomial(const Polynomial& other)
 
 const Polynomial& Polynomial::operator= (const Polynomial& rhs)
 {
+    // check self assignment
     if (this != &rhs)
     {
+        // clear old data if any exists
         if (!terms.empty())
         {
             terms.clear();
         }
+        // copy new data if any exists
         if (!rhs.terms.empty())
         {
             // make a deep copy of the data

@@ -25,12 +25,10 @@ bool Term::operator<(Term term2)
 	return exponent < term2.exponent;
 }
 
-
 bool Term::operator>(Term term2)
 {
 	return exponent > term2.exponent;
 }
-
 
 bool Term::operator==(Term term2)
 {

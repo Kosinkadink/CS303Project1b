@@ -17,7 +17,7 @@ private:
 
 };
 
-
+// take a valid string input and return an ordered polynomial
  Polynomial UserInterface::parsePolynomial(string input)
 {
 	stringstream inputstream(input);
