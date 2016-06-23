@@ -2,6 +2,7 @@
 
 #include "Term.h"
 #include <list>
+#include <iostream>
 
 using namespace std;
 
@@ -11,6 +12,8 @@ public:
 	Polynomial() {}
 	void addTerm(Term newterm);
 	const Polynomial& operator+(const Polynomial& rhs);
+	void printPolynomial();
+	
 private:
 	list<Term> terms;
 };
@@ -60,4 +63,22 @@ const Polynomial& Polynomial::operator+(const Polynomial& rhs)
 		newPoly.addTerm(*iter2);
 	}
 	return newPoly;
+}
+
+void Polynomial::printPolynomial()
+{
+	list<Term>::iterator iter1;
+	for (iter1 = terms.begin(); iter1 != terms.end(); iter1++)
+	{
+		if (iter1->getCoeff() != NULL)
+			cout << iter1->getCoeff();
+		if (iter1->getExponent() == 0)
+		{
+			cout << " ";
+		}
+		else if (iter1->getExponent() != 0)
+		{
+			cout << "X^" << iter1->getExponent() << " ";
+		}
+	}
 }

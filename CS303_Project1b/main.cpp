@@ -12,6 +12,7 @@ int main()
 
 	UserInterface ui;
 	ui.parsePolynomial(example2);
+	
 
 	return 0;
 }
