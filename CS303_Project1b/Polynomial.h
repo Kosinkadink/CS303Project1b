@@ -11,7 +11,7 @@ class Polynomial
 public:
     Polynomial() { ; }
 	void addTerm(Term newterm);
-	const Polynomial& operator+(const Polynomial& rhs);
+	Polynomial operator+(const Polynomial& rhs);
 	void printPolynomial();
     ~Polynomial();
     Polynomial(const Polynomial& other);
@@ -50,17 +50,17 @@ void Polynomial::addTerm(Term newterm)
 }
 
 
-const Polynomial& Polynomial::operator+(const Polynomial& rhs)
+Polynomial Polynomial::operator+(const Polynomial& rhs)
 {
 	list<Term>::iterator iter1;
-	list<Term>::const_iterator iter2 = rhs.terms.begin();
+	list<Term>::const_iterator iter2;
 	Polynomial newPoly;
 
 	for (iter1 = terms.begin(); iter1 != terms.end(); iter1++)
 	{
 		newPoly.addTerm(*iter1);
 	}
-	for (iter2 = terms.begin(); iter2 != terms.end(); iter2++)
+	for (iter2 = rhs.terms.begin(); iter2 != rhs.terms.end(); iter2++)
 	{
 		newPoly.addTerm(*iter2);
 	}
