@@ -11,14 +11,14 @@ class UserInterface
 {
 public:
 	UserInterface() {}
-	const Polynomial& parsePolynomial(string input);
+	Polynomial parsePolynomial(string input);
 private:
 	void parseAfterX(int& coeff, int& exp, stringstream& inputstream, Polynomial& poly, char& ch);
 
 };
 
 
-const Polynomial& UserInterface::parsePolynomial(string input)
+ Polynomial UserInterface::parsePolynomial(string input)
 {
 	stringstream inputstream(input);
 	Polynomial poly;

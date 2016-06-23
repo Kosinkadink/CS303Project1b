@@ -11,8 +11,9 @@ int main()
 	Polynomial pleasework;
 
 	UserInterface ui;
-	ui.parsePolynomial(example2);
-	
+	pleasework = ui.parsePolynomial(example);
+    pleasework.printPolynomial();
+    system("pause");
 
 	return 0;
 }
