@@ -6,14 +6,14 @@ using namespace std;
 class PolynomialException : public exception
 {
 public:
-	PolynomialException(string e = "Error occured in Polynomial class") { msg = e; }
-	string what();
+    PolynomialException(string e = "Error occured in Polynomial class") { msg = e; }
+    string what();
 private:
-	string msg;
+    string msg;
 };
 
 
 string PolynomialException::what()
 {
-	return msg;
+    return msg;
 }
