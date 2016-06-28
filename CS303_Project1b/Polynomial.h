@@ -61,7 +61,7 @@ void Polynomial::addTerm(Term newterm)
         terms.push_back(newterm);
     }
 }
-/*
+
 // add a term knowing the order
 void Polynomial::addingKnownTerms(Term newterm)
 {
@@ -69,15 +69,22 @@ void Polynomial::addingKnownTerms(Term newterm)
     if (terms.empty())
     {
         terms.push_front(newterm);
+		return;
     }
-    // point to last term in the list in case coefficents need to be merged
-    Term* back = &terms.back();
-    // merge coefficents
+	// point to last term in the list in case coefficents need to be merged
+	Term* back = &terms.back();
+	// polynomial contains some data
+    // exponents match, merge coefficents
     if (back->getExponent() == newterm.getExponent())
     {
-        
+		// add coefficents of like terms
+		*back + newterm;
+		// remove terms from polynomial if their coefficent's become 0
+		if (back->getCoeff() == 0)
+			terms.pop_back();
+		return;
     }
-    // add to back of polynomial
+    // exponents do not match, add to back of polynomial
     else
     {
         terms.push_back(newterm);
@@ -86,49 +93,45 @@ void Polynomial::addingKnownTerms(Term newterm)
     back = nullptr;
 }
 
-// add two polynomials and return a new polynomial
+// add two sorted polynomials and return a new polynomial that is their sum
 Polynomial Polynomial::operator+(const Polynomial& rhs)
 {
+	// point to the front of both sorted lists
     list<Term>::iterator iter1 = terms.begin();
     list<Term>::const_iterator iter2 = rhs.terms.begin();
     Polynomial newPoly;
     // merge the two sorted polynomials, continue until the end of either list is reached
     while (iter1 != terms.end() && iter2 != rhs.terms.end())
     {
-        // exponents are equal
-        if (things)
-        {
-
-        }
         // front of list 1 is larger
-        else if (*iter1 > *iter2)
+        if (*iter1 > *iter2)
         {
-            newPoly.terms.push_back(*iter1);
+			newPoly.addingKnownTerms(*iter1);
             iter1++;
         }
         // front of list 2 is larger
         else
         {
-            newPoly.terms.push_back(*iter2);
+            newPoly.addingKnownTerms(*iter2);
             iter2++;
         }
     }
     // if any items remain to be copied from polynomial one, do so
     while (iter1 != terms.end())
     {
-        newPoly.terms.push_back(*iter1);
+		newPoly.addingKnownTerms(*iter1);
         iter1++;
     }
     // if any items remain to be copied from polynomial two, do so
     while (iter2 != rhs.terms.end())
     {
-        newPoly.terms.push_back(*iter2);
+		newPoly.addingKnownTerms(*iter2);
         iter2++;
     }
     return newPoly;
 }
-*/
-
+/*
+// old addition operator function that performs poorer
 // add two polynomials and return a new polynomial
 Polynomial Polynomial::operator+(const Polynomial& rhs)
 {
@@ -147,10 +150,13 @@ Polynomial Polynomial::operator+(const Polynomial& rhs)
     }
     return newPoly;
 }
-
+*/
 // print ordered polynomial to the screen in legible fashion
 void Polynomial::printPolynomial()
 {
+	// return some information in case of an empty polynomial
+	if (terms.empty())
+		cout << 0;
     list<Term>::iterator iter1;
     // print as we iterate over the terms
     for (iter1 = terms.begin(); iter1 != terms.end(); iter1++)
