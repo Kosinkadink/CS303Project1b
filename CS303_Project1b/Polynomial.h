@@ -19,6 +19,7 @@ public:
     ~Polynomial();
     Polynomial(const Polynomial& other);
     const Polynomial& operator= (const Polynomial& rhs);
+    void addingKnownTerms(Term newterm);
 private:
     list<Term> terms;
 };
@@ -61,6 +62,30 @@ void Polynomial::addTerm(Term newterm)
     }
 }
 /*
+// add a term knowing the order
+void Polynomial::addingKnownTerms(Term newterm)
+{
+    // polynomial is empty
+    if (terms.empty())
+    {
+        terms.push_front(newterm);
+    }
+    // point to last term in the list in case coefficents need to be merged
+    Term* back = &terms.back();
+    // merge coefficents
+    if (back->getExponent() == newterm.getExponent())
+    {
+        
+    }
+    // add to back of polynomial
+    else
+    {
+        terms.push_back(newterm);
+    }
+    // stop pointing at things
+    back = nullptr;
+}
+
 // add two polynomials and return a new polynomial
 Polynomial Polynomial::operator+(const Polynomial& rhs)
 {
