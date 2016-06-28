@@ -57,7 +57,12 @@ void UserInterface::polyInput() {
         {
             cout << "Enter Your First Polynomial: ";
             cin >> poly1;
-            polyEntry1 = parsePolynomial(poly1);
+			try {
+				polyEntry1 = parsePolynomial(poly1);
+			}
+			catch (PolynomialException e) {
+				cout << "Error parsing given polynomial; " << endl << e.what();
+			}
             cout << endl;
         }
 
@@ -66,7 +71,12 @@ void UserInterface::polyInput() {
         {
             cout << "Enter Your Second Polynomial: ";
             cin >> poly2;
-            polyEntry2 = parsePolynomial(poly2);
+			try {
+				polyEntry2 = parsePolynomial(poly2);
+			}
+			catch (PolynomialException e) {
+				cout << "Error parsing given polynomial; " << endl << e.what();
+			}
             cout << endl;
         }
 
