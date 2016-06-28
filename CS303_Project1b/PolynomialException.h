@@ -12,7 +12,7 @@ private:
     string msg;
 };
 
-
+// use hardcoded messages to display problems to the user.  mostly incorrect input formatting
 string PolynomialException::what()
 {
     return msg;

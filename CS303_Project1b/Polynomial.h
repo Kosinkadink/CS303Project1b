@@ -31,12 +31,14 @@ void Polynomial::addTerm(Term newterm)
     {
         terms.push_front(newterm);
     }
+    // polynomial contains some terms, placement matters
     else
     {
         list<Term>::iterator iter;
-        // find correct spot to insert term
+        // find correct spot to insert term by iterating over the list
         for (iter = terms.begin(); iter != terms.end(); iter++)
         {
+            // nex exponent already exists, adjust coefficent term appropriately
             if (*iter == newterm)
             {
                 // add coefficents of like terms
@@ -46,13 +48,15 @@ void Polynomial::addTerm(Term newterm)
                     terms.erase(iter);
                 return;
             }
-            // place into correct position
+            // place into correct position in the list
             else if (*iter < newterm)
             {
+                // create a new term in the correctly located spot
                 terms.insert(iter, newterm);
                 return;
             }
         }
+        // term needs to be placed at the end of the list
         terms.push_back(newterm);
     }
 }
@@ -80,9 +84,10 @@ Polynomial Polynomial::operator+(const Polynomial& rhs)
 void Polynomial::printPolynomial()
 {
     list<Term>::iterator iter1;
-    // print as we iterate over out terms
+    // print as we iterate over the terms
     for (iter1 = terms.begin(); iter1 != terms.end(); iter1++)
     {
+        // positive coefficent
         if (iter1->getCoeff() > 0)
         {
             // special case, don't print 1 in 1x situations
@@ -100,6 +105,7 @@ void Polynomial::printPolynomial()
                 cout << iter1->getCoeff();
             }
         }
+        // negative coefficent
         else if (iter1->getCoeff() < 0)
         {
             // special case, don't print 1 in -1x situations
@@ -108,14 +114,17 @@ void Polynomial::printPolynomial()
             else
                 cout << iter1->getCoeff();
         }
+        // 0 exponent, associated with a constant.  i.e. no X in this term
         if (iter1->getExponent() == 0)
         {
             cout << " ";
         }
+        // exponent of 1, format for no ^
         else if (iter1->getExponent() == 1)
         {
             cout << "X ";
         }
+        // normal exponent formatting
         else if (iter1->getExponent() != 0)
         {
             cout << "X^" << iter1->getExponent() << " ";
@@ -124,20 +133,23 @@ void Polynomial::printPolynomial()
     cout << endl;
 }
 
+// deconstuctor
 Polynomial::~Polynomial()
 {
+    // if the polynomial contains a list of terms, clear them
     if (!terms.empty())
     {
         terms.clear();
     }
 }
 
-
+// copy constructor
 Polynomial::Polynomial(const Polynomial& other)
 {
     *this = other;
 }
 
+// assignment operator
 const Polynomial& Polynomial::operator= (const Polynomial& rhs)
 {
     // check self assignment
@@ -159,30 +171,33 @@ const Polynomial& Polynomial::operator= (const Polynomial& rhs)
             }
         }
     }
+    // return
     return *this;
 }
 
-
+// parse a polynomial from an input string
 void Polynomial::createFromString(string input)
 {
-
+    // clear current polynomial information if any exists
     if (!terms.empty())
         terms.clear();
-
-    if (input.empty()) // a blank string = poly with a zero constant term
+    // a blank string = poly with a zero constant term
+    if (input.empty()) 
     {
+        // format for blank input
         addTerm(Term(0, 0));
         return;
     }
-
+    // declare stringsteam for parsing
     stringstream inputstream(input);
-
+    // variables to be used in parsing
     int coeff, exp = NULL;
     char ch, ch2;
-
+    // parse entire string input
     while (inputstream >> ch)
     {
-        if (isdigit(ch)) //starts with a digit; only occurs when the first term entered is positive
+        //starts with a digit; only occurs when the first term entered is positive
+        if (isdigit(ch)) 
         {
             inputstream.putback(ch);
             // read integer into coeff

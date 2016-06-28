@@ -18,13 +18,13 @@ private:
     string poly1, poly2, select;
 };
 
-// take a valid string input and return an ordered polynomial
+// take a valid string input and return an ordered polynomial, wrapper function
 Polynomial UserInterface::parsePolynomial(string input)
 {
     return Polynomial(input);
 }
 
-//has no parameters, displays option menu and gets input from user on what polynomial to parse
+// has no parameters, displays option menu and gets input from user on what polynomial to parse
 void UserInterface::polyInput() {
 
     bool a = true;
@@ -37,9 +37,11 @@ void UserInterface::polyInput() {
         << "4. Quit\n\n" << "Please Enter Your Selection: ";
     cin >> select; cout << endl;
 
-    while (b) // loops thru valid user selection 
+    // loops thru valid user selection 
+    while (b) 
     {
-        while (a) //loops thru selection option if user input is invalid 
+        //loops thru selection option if user input is invalid 
+        while (a) 
         {
             if (select == "1" || select == "2" || select == "3" || select == "4") { a = false; }
             else
