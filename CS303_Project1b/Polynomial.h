@@ -60,6 +60,49 @@ void Polynomial::addTerm(Term newterm)
         terms.push_back(newterm);
     }
 }
+/*
+// add two polynomials and return a new polynomial
+Polynomial Polynomial::operator+(const Polynomial& rhs)
+{
+    list<Term>::iterator iter1 = terms.begin();
+    list<Term>::const_iterator iter2 = rhs.terms.begin();
+    Polynomial newPoly;
+    // merge the two sorted polynomials, continue until the end of either list is reached
+    while (iter1 != terms.end() && iter2 != rhs.terms.end())
+    {
+        // exponents are equal
+        if (things)
+        {
+
+        }
+        // front of list 1 is larger
+        else if (*iter1 > *iter2)
+        {
+            newPoly.terms.push_back(*iter1);
+            iter1++;
+        }
+        // front of list 2 is larger
+        else
+        {
+            newPoly.terms.push_back(*iter2);
+            iter2++;
+        }
+    }
+    // if any items remain to be copied from polynomial one, do so
+    while (iter1 != terms.end())
+    {
+        newPoly.terms.push_back(*iter1);
+        iter1++;
+    }
+    // if any items remain to be copied from polynomial two, do so
+    while (iter2 != rhs.terms.end())
+    {
+        newPoly.terms.push_back(*iter2);
+        iter2++;
+    }
+    return newPoly;
+}
+*/
 
 // add two polynomials and return a new polynomial
 Polynomial Polynomial::operator+(const Polynomial& rhs)
@@ -205,6 +248,7 @@ void Polynomial::createFromString(string input)
             // determine if next character is X or part of the next term
             if (inputstream >> ch) // if something to read
             {
+                // term is complete, add to the polynomial
                 if (ch == '+' || ch == '-')
                 {
                     inputstream.putback(ch);
@@ -213,11 +257,13 @@ void Polynomial::createFromString(string input)
                 }
                 else if (ch == 'X' || ch == 'x')
                 {
-                    if (inputstream >> ch) //if something to read
+                    //if something is left to be read
+                    if (inputstream >> ch) 
                     {
                         // check if there is a carrot with value
                         if (ch == '^')
                         {
+                            // X has a positive exponent, complete the term
                             inputstream >> ch;
                             if (isdigit(ch))
                             {
@@ -225,6 +271,7 @@ void Polynomial::createFromString(string input)
                                 inputstream >> exp;
                                 addTerm(Term(coeff, exp));
                             }
+                            // X has a negative exponent, complete the term
                             else if (ch == '-')
                             {
                                 inputstream >> ch;
@@ -232,7 +279,8 @@ void Polynomial::createFromString(string input)
                                 {
                                     inputstream.putback(ch);
                                     inputstream >> exp;
-                                    addTerm(Term(coeff, -exp)); //making exponent negative because of minus sign
+                                    //making exponent negative because of minus sign
+                                    addTerm(Term(coeff, -exp)); 
                                 }
                                 else
                                 {
@@ -246,6 +294,7 @@ void Polynomial::createFromString(string input)
                                 throw PolynomialException("expected exponent or start of next term, got: " + ch);
                             }
                         }
+                        // term is complete, add to the list
                         else if (ch == '+' || ch == '-')
                         {
                             inputstream.putback(ch);
@@ -258,6 +307,7 @@ void Polynomial::createFromString(string input)
                             throw PolynomialException("expected ^ or start of next term, got: " + ch);
                         }
                     }
+                    // X has no exponent, use 1 and complete the term
                     else
                     {
                         exp = 1;
@@ -270,13 +320,15 @@ void Polynomial::createFromString(string input)
                     throw PolynomialException("expected +/-, X or start of next term, got: " + ch);
                 }
             }
+            // the last term in the string is a constant, add it to the term list
             else
             {
                 exp = 0;
                 addTerm(Term(coeff, exp));
             }
         }
-        else // used for all non-first terms
+        // used for all non-first terms
+        else 
         {
             if (ch == '+' || ch == '-')
             {
@@ -285,17 +337,18 @@ void Polynomial::createFromString(string input)
                 {
                     inputstream.putback(ch2);
                     inputstream >> coeff;
+                    // make coefficent negative if necessary 
                     if (ch == '-')
                         coeff *= -1;
                     //determine if next character is X, or start of next term
-                    if (inputstream >> ch) //if something to read
+                    if (inputstream >> ch) 
                     {
-
                         if (ch == 'X' || ch == 'x')
                         {
-                            // determine if next character is X or part of the next term
-                            if (inputstream >> ch) // if something to read
+                            // determine if next character is an exponent or part of the next term
+                            if (inputstream >> ch) 
                             {
+                                // term is complete
                                 if (ch == '+' || ch == '-')
                                 {
                                     inputstream.putback(ch);
@@ -306,12 +359,14 @@ void Polynomial::createFromString(string input)
                                 else if (ch == '^')
                                 {
                                     inputstream >> ch;
+                                    // positive exponent
                                     if (isdigit(ch))
                                     {
                                         inputstream.putback(ch);
                                         inputstream >> exp;
                                         addTerm(Term(coeff, exp));
                                     }
+                                    // negative exponent
                                     else if (ch == '-')
                                     {
                                         inputstream >> ch;
@@ -319,7 +374,8 @@ void Polynomial::createFromString(string input)
                                         {
                                             inputstream.putback(ch);
                                             inputstream >> exp;
-                                            addTerm(Term(coeff, -exp)); //making exponent negative because of minus sign
+                                            //making exponent negative because of minus sign
+                                            addTerm(Term(coeff, -exp)); 
                                         }
                                         else
                                         {
@@ -339,12 +395,14 @@ void Polynomial::createFromString(string input)
                                     throw PolynomialException("expected ^ or start of next term, got: " + ch);
                                 }
                             }
+                            // X has no exponent, use 1 and complete the term
                             else
                             {
                                 exp = 1;
                                 addTerm(Term(coeff, exp));
                             }
                         }
+                        // term is complete, no X value (constant)
                         else if (ch == '+' || ch == '-')
                         {
                             inputstream.putback(ch);
@@ -357,38 +415,42 @@ void Polynomial::createFromString(string input)
                             throw PolynomialException("expected X or start of next term, got: " + ch);
                         }
                     }
+                    // input string ends, complete term with no exponent
                     else
                     {
                         exp = 0;
                         addTerm(Term(coeff, exp));
                     }
                 }
+                // no numerical coefficent
                 else if (ch2 == 'X' || ch2 == 'x')
                 {
                     coeff = 1;
+                    // account for -X
                     if (ch == '-')
                         coeff *= -1;
                     // determine if next character is X or part of the next term
-                    if (inputstream >> ch) // if something to read
+                    if (inputstream >> ch) 
                     {
+                        // term is complete
                         if (ch == '+' || ch == '-')
                         {
                             inputstream.putback(ch);
                             exp = 1;
                             addTerm(Term(coeff, exp));
                         }
-
-
                         // check if there is a carrot with value
                         else if (ch == '^')
                         {
                             inputstream >> ch;
+                            // positive exponent
                             if (isdigit(ch))
                             {
                                 inputstream.putback(ch);
                                 inputstream >> exp;
                                 addTerm(Term(coeff, exp));
                             }
+                            // negative exponent
                             else if (ch == '-')
                             {
                                 inputstream >> ch;
@@ -396,7 +458,8 @@ void Polynomial::createFromString(string input)
                                 {
                                     inputstream.putback(ch);
                                     inputstream >> exp;
-                                    addTerm(Term(coeff, -exp)); //making exponent negative because of minus sign
+                                    //making exponent negative because of minus sign
+                                    addTerm(Term(coeff, -exp));
                                 }
                                 else
                                 {
@@ -418,6 +481,7 @@ void Polynomial::createFromString(string input)
                             throw PolynomialException("expected ^ or start of next term, got: " + ch);
                         }
                     }
+                    // X has no numerical exponent, use 1 and complete the term
                     else
                     {
                         exp = 1;
@@ -433,9 +497,10 @@ void Polynomial::createFromString(string input)
             else if (ch == 'X' || ch == 'x')
             {
                 coeff = 1;
-                // determine if next character is X or part of the next term
-                if (inputstream >> ch) // if something to read
+                // determine if next character is an exponent or part of the next term
+                if (inputstream >> ch) 
                 {
+                    // term is complete
                     if (ch == '+' || ch == '-')
                     {
                         inputstream.putback(ch);
@@ -446,12 +511,14 @@ void Polynomial::createFromString(string input)
                     else if (ch == '^')
                     {
                         inputstream >> ch;
+                        // positive exponent
                         if (isdigit(ch))
                         {
                             inputstream.putback(ch);
                             inputstream >> exp;
                             addTerm(Term(coeff, exp));
                         }
+                        // negative exponent
                         else if (ch == '-')
                         {
                             inputstream >> ch;
@@ -459,7 +526,8 @@ void Polynomial::createFromString(string input)
                             {
                                 inputstream.putback(ch);
                                 inputstream >> exp;
-                                addTerm(Term(coeff, -exp)); //making exponent negative because of minus sign
+                                //making exponent negative because of minus sign
+                                addTerm(Term(coeff, -exp)); 
                             }
                             else
                             {
@@ -479,6 +547,7 @@ void Polynomial::createFromString(string input)
                         throw PolynomialException("expected ^ or start of next term, got: " + ch);
                     }
                 }
+                // X has no exponent, use 1 and complete the term
                 else
                 {
                     exp = 1;
@@ -487,6 +556,7 @@ void Polynomial::createFromString(string input)
             }
 
         }
+        // error checking for incomplete terms
         if (coeff == NULL || exp == NULL && coeff != 0 && exp != 0)
         {
             // THROW polynomial exception; coefficient or exponent was not understood
